@@ -5,19 +5,44 @@ M.config = function()
     -- catppuccin theme
     { "catppuccin/nvim" },
     -- show function signature when you type
-    { "ray-x/lsp_signature.nvim" },
+    {
+      "ray-x/lsp_signature.nvim",
+      config = function()
+        require("user.lsp_signature").config()
+      end,
+      event = { "BufRead", "BufNew" },
+    },
     -- intelligently reopen files at your last edit position. By default git, svn, and mercurial commit messages are ignored because you probably want to type a new message and not re-edit the previous one.
-    { "vladdoster/remember.nvim" },
+    {
+      "vladdoster/remember.nvim",
+      config = function()
+        require("remember").setup {}
+      end,
+      enabeld = lvim.builtin.lastplace.active
+    },
     -- todo comments is a lua plugin for Neovim >= 0.8.0 to highlight and search for todo comments like TODO, HACK, BUG in your code base.
-    { "folke/todo-comments.nvim" },
+    {
+      "folke/todo-comments.nvim",
+      dependencies = "nvim-lua/plenary.nvim",
+      config = function()
+        require("user.todo_comments").config()
+      end,
+      event = "BufRead"
+    },
     -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
     { "folke/trouble.nvim" },
-    -- Leap is a general-purpose motion plugin for Neovim, building and improving primarily on vim-sneak, with the ultimate goal of establishing a new standard interface for moving around in the visible area in Vim-like modal editors. It aims to be consistent, reliable, needs zero configuration, and tries to get out of your way as much as possible.
-    { "ggandor/leap.nvim" },
+    -- Leap is a general-purpose motion plugin for Neovim, building and improving primarily on vim-sneak, with the ultimate goal of establishing a new standard interface for moving around in the visible area in Vim-like modal editors. It aims to be consistent, reliable, needs zero configuration, and tries to get out of your way as much as possible. { "ggandor/leap.nvim" },
     -- Hop is an EasyMotion-like plugin allowing you to jump anywhere in a document with as few keystrokes as possible.
     { "phaazon/hop.nvim" },
     -- A tree like view for symbols in Neovim using the Language Server Protocol. Supports all your favourite languages.
-    -- {"simrat39/symbols-outline.nvim"},
+    {
+      "simrat39/symbols-outline.nvim",
+      config = function()
+        require("user.symbols_outline").config()
+      end,
+      event = "BufReadPost",
+      enabled = lvim.builtin_tag_provider == "symbols-outline",
+    },
     -- A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
     { "tzachar/cmp-tabnine" },
     -- Twilight is a Lua plugin for Neovim 0.5 that dims inactive portions of the code you're editing.
