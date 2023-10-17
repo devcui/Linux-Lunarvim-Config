@@ -123,9 +123,23 @@ M.config = function()
       enabled = lvim.builtin.rust_programming.active,
     },
     -- lsp_lines is a simple neovim plugin that renders diagnostics using virtual lines on top of the real line of code.
-    { url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim", lazy = true },
+    {
+      url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+      lazy = true,
+      config = function()
+        require("lsp_lines").setup()
+      end,
+      enabled = lvim.builtin.lsp_lines,
+    },
     -- zen mod
-    { "folke/zen-mode.nvim" },
+    {
+      "folke/zen-mode.nvim",
+      lazy = true,
+      cmd = "ZenMode",
+      config = function()
+        require("user.zen").config()
+      end,
+    },
     -- A search panel for neovim.
     { "windwp/nvim-spectre" },
     -- The fastest Neovim colorizer.
