@@ -30,10 +30,38 @@ M.config = function()
       event = "BufRead"
     },
     -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
-    { "folke/trouble.nvim" },
+    {
+      "folke/trouble.nvim",
+      config = function()
+        require("trouble").setup {
+          auto_open = false,
+          auto_close = true,
+          padding = false,
+          height = 10,
+          use_diagnostic_signs = true,
+        }
+      end,
+      event = "VeryLazy",
+      cmd = "Trouble",
+    },
     -- Leap is a general-purpose motion plugin for Neovim, building and improving primarily on vim-sneak, with the ultimate goal of establishing a new standard interface for moving around in the visible area in Vim-like modal editors. It aims to be consistent, reliable, needs zero configuration, and tries to get out of your way as much as possible. { "ggandor/leap.nvim" },
+    {
+      "ggandor/leap.nvim",
+      config = function()
+        require("user.leap").config()
+      end,
+      enabled = lvim.builtin.motion_provider == "leap",
+    },
     -- Hop is an EasyMotion-like plugin allowing you to jump anywhere in a document with as few keystrokes as possible.
-    { "phaazon/hop.nvim" },
+    {
+      "phaazon/hop.nvim",
+      event = "VeryLazy",
+      cmd = { "HopChar1CurrentLineAC", "HopChar1CurrentLineBC", "HopChar2MW", "HopWordMW" },
+      config = function()
+        require("user.hop").config()
+      end,
+      enabled = lvim.builtin.motion_provider == "hop",
+    },
     -- A tree like view for symbols in Neovim using the Language Server Protocol. Supports all your favourite languages.
     {
       "simrat39/symbols-outline.nvim",
@@ -44,17 +72,56 @@ M.config = function()
       enabled = lvim.builtin_tag_provider == "symbols-outline",
     },
     -- A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
-    { "tzachar/cmp-tabnine" },
+    {
+      "tzachar/cmp-tabnine",
+      build = "./install.sh",
+      dependencies = "hrsh7th/nvim-cmp",
+      config = function()
+        local tabnine = require "cmp_tabnine.config"
+        tabnine:setup {
+          max_lines = 1000,
+          max_num_results = 10,
+          sort = true,
+        }
+      end,
+      lazy = true,
+      event = "InsertEnter",
+      enabled = lvim.builtin.tabnine.active,
+    },
     -- Twilight is a Lua plugin for Neovim 0.5 that dims inactive portions of the code you're editing.
-    { "folke/twilight.nvim" },
+    {
+      "folke/twilight.nvim",
+      lazy = true,
+      config = function()
+        require("user.twilight").config()
+      end,
+    },
     -- The goal of nvim-bqf is to make Neovim's quickfix window better.
-    { "kevinhwang91/nvim-bqf" },
+    {
+      "kevinhwang91/nvim-bqf",
+      event = "WinEnter",
+      config = function()
+        require("user.bqf").config()
+      end,
+    },
     -- match-up is a plugin that lets you highlight, navigate, and operate on sets of matching text. It extends vim's % key to language-specific words instead of just single characters.
     -- {"andymass/vim-matchup"},
     -- markdown preview
-    { "iamcco/markdown-preview.nvim" },
+    {
+      "iamcco/markdown-preview.nvim",
+      build = "cd app && npm install",
+      ft = "markdown",
+    },
     -- A plugin to improve your rust experience in neovim.
-    { "simrat39/rust-tools.nvim" },
+    {
+      "simrat39/rust-tools.nvim",
+      lazy = true,
+      config = function()
+        require("user.rust_tools").config()
+      end,
+      ft = { "rust", "rs" },
+      enabled = lvim.builtin.rust_programming.active,
+    },
     -- lsp_lines is a simple neovim plugin that renders diagnostics using virtual lines on top of the real line of code.
     { url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim", lazy = true },
     -- zen mod
