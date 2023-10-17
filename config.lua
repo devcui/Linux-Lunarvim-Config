@@ -8,6 +8,9 @@ lvim.builtin.rust_programming = { active = true }
 lvim.builtin.lsp_lines = true
 lvim.builtin.tmux_lualine = true
 lvim.builtin.indentlines = { active = true }
+lvim.builtin.persistence = { active = true }
+lvim.builtin.orgmode = { active = true }
+lvim.builtin.test_runner = { active = true, runner = "ultest" }
 
 -- Additional Plugins
 -- =========================================

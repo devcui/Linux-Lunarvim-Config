@@ -141,21 +141,65 @@ M.config = function()
       end,
     },
     -- A search panel for neovim.
-    { "windwp/nvim-spectre" },
+    {
+      "windwp/nvim-spectre",
+      lazy = true,
+      config = function()
+        require("user.spectre").config()
+      end,
+    },
     -- The fastest Neovim colorizer.
-    { "norcalli/nvim-colorizer.lua" },
+    {
+      "norcalli/nvim-colorizer.lua",
+      config = function()
+        require("user.colorizer").config()
+      end,
+      event = "BufReadPre",
+    },
     --  Simple session management for Neovim with git branching, autoloading and Telescope support
-    { "olimorris/persisted.nvim" },
+    {
+      "olimorris/persisted.nvim",
+      event = "BufReadPre",
+      lazy = true,
+      config = function()
+        require("user.persist").config()
+      end,
+      enabled = lvim.builtin.persistence.active,
+    },
     -- Discord Rich Presence for Neovim
-    { "andweeb/presence.nvim" },
+    -- { "andweeb/presence.nvim" },
     -- Extensions for the built-in LSP support in Neovim for eclipse.jdt.ls
-    { "mfussenegger/nvim-jdtls" },
+    { "mfussenegger/nvim-jdtls", ft = "java" },
     -- Orgmode clone written in Lua for Neovim 0.9+
-    { "kristijanhusak/orgmode.nvim" },
+    {
+      "kristijanhusak/orgmode.nvim",
+      keys = { "go", "gC" },
+      ft = { "org" },
+      config = function()
+        require("user.orgmode").setup()
+      end,
+      enabled = lvim.builtin.orgmode.active,
+    },
     -- A better annotation generator. Supports multiple languages and annotation conventions.
-    { "danymat/neogen" },
+    {
+      "danymat/neogen",
+      lazy = true,
+      config = function()
+        require("neogen").setup {
+          enabled = true,
+        }
+      end,
+      dependencies = "nvim-treesitter/nvim-treesitter",
+    },
     -- Vim test
-    { "vim-test/vim-test" },
+    {
+      "vim-test/vim-test",
+      cmd = { "TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit" },
+      config = function()
+        require("user.vim_test").config()
+      end,
+      enabled = (lvim.builtin.test_runner.active and lvim.builtin.test_runner.runner == "ultest"),
+    },
     -- A Lua plugin, written in TypeScript, to write TypeScript (Lua optional).
     { "jose-elias-alvarez/typescript.nvim" },
     --  All the npm/yarn/pnpm commands I don't want to type
