@@ -1,6 +1,7 @@
 local M = {}
 
 M.config = function()
+  local neoclip_req = { "kkharji/sqlite.lua" }
   lvim.plugins = {
     -- catppuccin theme
     { "catppuccin/nvim" },
@@ -201,41 +202,208 @@ M.config = function()
       enabled = (lvim.builtin.test_runner.active and lvim.builtin.test_runner.runner == "ultest"),
     },
     -- A Lua plugin, written in TypeScript, to write TypeScript (Lua optional).
-    { "jose-elias-alvarez/typescript.nvim" },
+    {
+      "jose-elias-alvarez/typescript.nvim",
+      ft = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+      },
+      lazy = true,
+      config = function()
+        require("user.tss").config()
+      end,
+      enabled = lvim.builtin.web_programming.active,
+    },
     --  All the npm/yarn/pnpm commands I don't want to type
-    { "vuki656/package-info.nvim" },
+    {
+      "vuki656/package-info.nvim",
+      config = function()
+        require("package-info").setup()
+      end,
+      lazy = true,
+      event = { "BufReadPre", "BufNew" },
+      enabled = lvim.builtin.web_programming.active,
+    },
     -- VimTeX: A modern Vim and neovim filetype plugin for LaTeX files.
-    { "lervag/vimtex" },
+    {
+      "lervag/vimtex",
+      init = function()
+        require("user.tex").init()
+      end,
+      config = function()
+        vim.cmd "call vimtex#init()"
+      end,
+      ft = "tex",
+      event = "VeryLazy",
+      enabled = lvim.builtin.latex.active,
+    },
     -- An extensible framework for interacting with tests within NeoVim.
-    { "nvim-neotest/neotest" },
-    { "nvim-neotest/neotest-go" },
-    { "nvim-neotest/neotest-python" },
-    { "rouge8/neotest-rust" },
+    {
+      "nvim-neotest/neotest",
+      config = function()
+        require("user.ntest").config()
+      end,
+      dependencies = {
+        { "nvim-neotest/neotest-plenary" },
+      },
+      event = { "BufReadPost", "BufNew" },
+      enabled = (lvim.builtin.test_runner.active and lvim.builtin.test_runner.runner == "neotest"),
+    },
+    { "nvim-neotest/neotest-go",     event = { "BufEnter *.go" } },
+    { "nvim-neotest/neotest-python", event = { "BufEnter *.py" } },
+    { "rouge8/neotest-rust",         event = { "BufEnter *.rs" } },
     -- flutter tools
-    { "akinsho/flutter-tools.nvim" },
+    {
+      "akinsho/flutter-tools.nvim",
+      dependencies = "nvim-lua/plenary.nvim",
+      config = function()
+        require("user.flutter_tools").config()
+      end,
+      ft = "dart",
+    },
     -- cheat.sh integration for neovim in elegant way
-    { "RishabhRD/nvim-cheat.sh" },
+    {
+      "RishabhRD/nvim-cheat.sh",
+      dependencies = "RishabhRD/popfix",
+      config = function()
+        vim.g.cheat_default_window_layout = "vertical_split"
+      end,
+      lazy = true,
+      cmd = { "Cheat", "CheatWithoutComments", "CheatList", "CheatListWithoutComments" },
+      keys = "<leader>?",
+      enabled = lvim.builtin.cheat.active,
+    },
     -- Clipboard manager neovim plugin with telescope integration
-    { "AckslD/nvim-neoclip.lua" },
-    { "kristijanhusak/vim-dadbod-completion" },
+    {
+      "AckslD/nvim-neoclip.lua",
+      config = function()
+        require("user.neoclip").config()
+      end,
+      lazy = true,
+      keys = "<leader>y",
+      dependencies = neoclip_req,
+      enabled = lvim.builtin.neoclip.active,
+    },
+    -- Database auto completion powered by vim-dadbod.
+    { "kristijanhusak/vim-dadbod-completion", enabled = lvim.builtin.sql_integration.active },
     {
       "kristijanhusak/vim-dadbod-ui",
-      dependencies = { { "tpope/vim-dadbod", lazy = true } },
+      cmd = {
+        "DBUIToggle",
+        "DBUIAddConnection",
+        "DBUI",
+        "DBUIFindBuffer",
+        "DBUIRenameBuffer",
+      },
+      init = function()
+        vim.g.db_ui_use_nerd_fonts = 1
+        vim.g.db_ui_show_database_icon = 1
+      end,
+      dependencies = {
+        {
+          "tpope/vim-dadbod",
+          lazy = true,
+        },
+      },
       lazy = true,
+      enabled = lvim.builtin.sql_integration.active,
     },
-    { "karb94/neoscroll.nvim" },
-    { "declancm/cinnamon.nvim" },
-    { "github/copilot.vim" },
-    { "zbirenbaum/copilot.lua", dependencies = { "zbirenbaum/copilot-cmp", "nvim-cmp" } },
+    -- Smooth scrolling neovim plugin written in lua
+    {
+      "karb94/neoscroll.nvim",
+      config = function()
+        require("neoscroll").setup {
+          easing_function = "quadratic",
+          hide_cursor = true,
+        }
+      end,
+      event = "BufRead",
+      enabled = lvim.builtin.smooth_scroll == "neoscroll",
+    },
+    -- Smooth scrolling for ANY movement command 🤯. A Neovim plugin written in Lua!
+    {
+      "declancm/cinnamon.nvim",
+      config = function()
+        require("cinnamon").setup {
+          default_keymaps = true,
+          default_delay = 4,
+          extra_keymaps = true,
+          extended_keymaps = false,
+          centered = true,
+          scroll_limit = 100,
+        }
+      end,
+      event = "BufRead",
+      enabled = lvim.builtin.smooth_scroll == "cinnamon",
+    },
+    {
+      "github/copilot.vim",
+      config = function()
+        require("user.copilot").config()
+      end,
+      enabled = lvim.builtin.sell_your_soul_to_devil.active or lvim.builtin.sell_your_soul_to_devil.prada,
+    },
+    {
+      "zbirenbaum/copilot.lua",
+      dependencies = { "zbirenbaum/copilot-cmp", "nvim-cmp" },
+      config = function()
+        local cmp_source = { name = "copilot", group_index = 2 }
+        table.insert(lvim.builtin.cmp.sources, cmp_source)
+        vim.defer_fn(function()
+          require("copilot").setup()
+        end, 100)
+      end,
+      enabled = lvim.builtin.sell_your_soul_to_devil.prada,
+    },
+    --  Getting you where you want with the fewest keystrokes.
     {
       "ThePrimeagen/harpoon",
-      dependencies = { { "nvim-lua/plenary.nvim" },
-        { "nvim-lua/popup.nvim" } }
+      dependencies = {
+        { "nvim-lua/plenary.nvim" },
+        { "nvim-lua/popup.nvim" },
+      },
+      enabled = lvim.builtin.harpoon.active,
     },
-    { "sindrets/diffview.nvim" },
-    { "chipsenkbeil/distant.nvim" },
-    { "abzcoding/nvim-mini-file-icons" },
-    { "mtdl9/vim-log-highlighting",    ft = { "text", "log" } },
+    {
+      "sindrets/diffview.nvim",
+      lazy = true,
+      cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+      keys = { "<leader>gd", "<leader>gh" },
+      config = function()
+        require("user.diffview").config()
+      end,
+      enabled = lvim.builtin.fancy_diff.active,
+    },
+    -- About 🚧 (Alpha stage software) Edit files, run programs, and work with LSP on a remote machine from the comfort of your local environment 🚧
+    {
+      "chipsenkbeil/distant.nvim",
+      lazy = true,
+      build = { "DistantInstall" },
+      cmd = { "DistantLaunch", "DistantRun" },
+      config = function()
+        require("distant").setup {
+          ["*"] = vim.tbl_extend(
+            "force",
+            require("distant.settings").chip_default(),
+            { mode = "ssh" } -- use SSH mode by default
+          ),
+        }
+      end,
+      enabled = lvim.builtin.remote_dev.active,
+    },
+    -- icons
+    {
+      "abzcoding/nvim-mini-file-icons",
+      config = function()
+        require("nvim-web-devicons").setup()
+      end,
+      enabled = lvim.builtin.custom_web_devicons or not lvim.use_icons,
+    },
+    { "mtdl9/vim-log-highlighting",           ft = { "text", "log" } },
     { "yamatsum/nvim-cursorline" },
     { "abecodes/tabout.nvim" },
     { "kevinhwang91/nvim-hlslens" },
