@@ -224,4 +224,3 @@ M.delete_buffer = function()
 end
 
 return M
-

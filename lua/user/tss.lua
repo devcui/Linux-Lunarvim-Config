@@ -4,8 +4,7 @@ local api = vim.api
 
 local get_map_options = function(custom_options)
   local options = { silent = true }
-  if custom_options then
-    options = vim.tbl_extend("force", options, custom_options)
+  if custom_options then options = vim.tbl_extend("force", options, custom_options)
   end
   return options
 end
@@ -193,4 +192,3 @@ M.config = function()
 end
 
 return M
-

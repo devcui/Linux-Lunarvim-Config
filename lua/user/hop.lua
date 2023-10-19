@@ -1,6 +1,5 @@
 local M = {}
 
-
 M.config = function()
   local status_ok, hop = pcall(require, "hop")
   if not status_ok then
@@ -11,5 +10,3 @@ M.config = function()
 end
 
 return M
-
-
