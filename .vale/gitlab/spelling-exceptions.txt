@@ -26,6 +26,7 @@ Bamboo
 Bazel
 Bepa
 Bhyve
+Binance
 Bitbucket
 Blankline
 Blockchain
@@ -972,6 +973,7 @@ upstreams
 upvote
 upvoted
 upvotes
+utilize
 validator
 validators
 vendored
@@ -1001,3 +1003,4 @@ wireframes
 wireframing
 worktree
 worktrees
+
