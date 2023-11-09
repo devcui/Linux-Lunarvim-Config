@@ -49,7 +49,7 @@ M.config = function()
       cond = function()
         local _time = os.date "*t"
         return ((_time.hour >= 21 and _time.hour < 24) or (_time.hour >= 0 and _time.hour < 1))
-            and lvim.builtin.time_based_themes
+          and lvim.builtin.time_based_themes
       end,
     },
     {
@@ -212,7 +212,7 @@ M.config = function()
       end,
       enabled = lvim.builtin.presence.active,
     },
-    { "mfussenegger/nvim-jdtls",     ft = "java" },
+    { "mfussenegger/nvim-jdtls", ft = "java" },
     {
       "kristijanhusak/orgmode.nvim",
       keys = { "go", "gC" },
@@ -288,9 +288,9 @@ M.config = function()
       event = { "BufReadPost", "BufNew" },
       enabled = (lvim.builtin.test_runner.active and lvim.builtin.test_runner.runner == "neotest"),
     },
-    { "nvim-neotest/neotest-go",     event = { "BufEnter *.go" } },
+    { "nvim-neotest/neotest-go", event = { "BufEnter *.go" } },
     { "nvim-neotest/neotest-python", event = { "BufEnter *.py" } },
-    { "rouge8/neotest-rust",         event = { "BufEnter *.rs" } },
+    { "rouge8/neotest-rust", event = { "BufEnter *.rs" } },
     {
       "rcarriga/vim-ultest",
       cmd = { "Ultest", "UltestSummary", "UltestNearest" },
@@ -828,6 +828,9 @@ M.config = function()
       name = "new-indent",
       main = "ibl",
       enabled = lvim.builtin.indentlines.mine,
+    },
+    {
+      "wakatime/vim-wakatime",
     },
   }
 end
